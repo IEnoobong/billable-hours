@@ -16,7 +16,7 @@ Billable hours is a web application developed with Vaadin and Spring Boot that a
 2. Run `mvn spring-boot:run` or `./mnvnw spring-boot:run`add the `-P=production-mode` to run in production mode or run
  with Docker `docker build -t billable-hours:v0.0.1 . && docker run -d billable-hours:v0.0.1`
 3. run `mvn clean package` 
- > App would be available on `http://{localhost}:{8080}` and API doc `http://{localhost}:{host}/swagger-ui.html`
+ > App would be available on `http://{localhost}:{port}` and API doc `http://{localhost}:{port}/swagger-ui.html`
 
  
 
