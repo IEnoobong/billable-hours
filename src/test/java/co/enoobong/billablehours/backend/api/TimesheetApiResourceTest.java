@@ -2,7 +2,6 @@ package co.enoobong.billablehours.backend.api;
 
 import co.enoobong.billablehours.backend.data.CompanyInvoice;
 import co.enoobong.billablehours.backend.service.TimesheetService;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,8 +40,8 @@ public class TimesheetApiResourceTest {
     willDoNothing().given(timesheetService).generateInvoice(any(Resource.class));
     given(timesheetService.getInvoiceResponse()).willReturn(invoiceResponse());
 
-    final InputStream timesheetStream = getClass().getClassLoader().getResourceAsStream("timesheet.csv");
-    final MockMultipartFile timesheetFile = new MockMultipartFile("timesheet", "timesheet.csv", "text/csv", timesheetStream);
+    final MockMultipartFile timesheetFile = new MockMultipartFile("timesheet", "timesheet.csv", "text/csv",
+            "timesheetData".getBytes(StandardCharsets.UTF_8));
 
     final CompanyInvoice companyInvoice = companyInvoice();
     mockMvc.perform(multipart("/api/v1/timesheets/generate-invoice")

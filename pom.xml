@@ -20,7 +20,6 @@
         <java.version>1.8</java.version>
         <vaadin.version>13.0.11</vaadin.version>
         <springfox.version>2.9.2</springfox.version>
-        <snippetsDirectory>${project.build.directory}/snippets</snippetsDirectory>
     </properties>
 
     <dependencies>

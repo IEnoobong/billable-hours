@@ -27,10 +27,10 @@ public class UploadView extends VerticalLayout implements HasNotifications {
   public UploadView(TimesheetService timesheetService) {
     this.timesheetService = timesheetService;
 
-    Header header = new Header();
+    final Header header = new Header();
     header.add(new H1("Please upload your timesheet"));
 
-    Upload upload = createUpload();
+    final Upload upload = createUpload();
 
     setSpacing(true);
 
@@ -38,8 +38,8 @@ public class UploadView extends VerticalLayout implements HasNotifications {
   }
 
   private Upload createUpload() {
-    MemoryBuffer receiver = new MemoryBuffer();
-    Upload upload = new Upload(receiver);
+    final MemoryBuffer receiver = new MemoryBuffer();
+    final Upload upload = new Upload(receiver);
 
     upload.setDropLabel(new Label("Upload timesheet in .csv format"));
     upload.setAcceptedFileTypes("text/csv");
@@ -57,7 +57,6 @@ public class UploadView extends VerticalLayout implements HasNotifications {
   private void onFileRejected(int maxFileSizeInBytes, DomEvent event) {
     log.info("file rejected {}", event);
     //there could be other reasons but the Java event object is not so flexible
-    //TODO convert bytes to human friendly string?
     final String errorMessage = "Maximum upload size exceeded. File cannot be more than %d bytes";
     showNotification(String.format(errorMessage, maxFileSizeInBytes));
   }

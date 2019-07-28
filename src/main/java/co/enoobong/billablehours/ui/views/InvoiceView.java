@@ -48,7 +48,7 @@ public class InvoiceView extends VerticalLayout implements HasNotifications, Aft
   }
 
   private void displayCompanyInvoices(List<CompanyInvoice> companyInvoices) {
-    for (CompanyInvoice companyInvoice : companyInvoices) {
+    for (final CompanyInvoice companyInvoice : companyInvoices) {
       add(new H2("Company: " + companyInvoice.getCompanyName()));
       final List<Invoice> invoices = companyInvoice.getInvoices();
       final Grid<Invoice> invoiceGrid = new Grid<>();
