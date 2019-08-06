@@ -18,10 +18,7 @@ public class CheckFileValidator implements ConstraintValidator<CheckFile, Multip
 
   @Override
   public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
-    if (file == null) {
-      return false;
-    }
-    if (file.getSize() > maxSize) {
+    if (file == null || file.getSize() > maxSize) {
       return false;
     }
 

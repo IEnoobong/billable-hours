@@ -39,7 +39,7 @@ public class ApiExceptionAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
   public ErrorResponse handleUnsupportedMediaTypeException(HttpMediaTypeNotSupportedException ex) {
-    log.error("Unsupported media type. Path {}", httpServletRequest.getServletPath(), ex);
+    log.warn("Unsupported media type. Path {}", httpServletRequest.getServletPath(), ex);
 
     return new ErrorResponse(ex.getMessage());
   }
@@ -47,7 +47,7 @@ public class ApiExceptionAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(MissingServletRequestPartException.class)
   public ErrorResponse handleMissingRequestPartException(MissingServletRequestPartException ex) {
-    log.error("Missing request part. Path {}", httpServletRequest.getServletPath(), ex);
+    log.warn("Missing request part. Path {}", httpServletRequest.getServletPath(), ex);
 
     return new ErrorResponse(ex.getMessage());
   }
@@ -55,7 +55,7 @@ public class ApiExceptionAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(MaxUploadSizeExceededException.class)
   public ErrorResponse handleUploadSizeExceededException(MaxUploadSizeExceededException ex) {
-    log.error("Upload size exceeded. Path {}", httpServletRequest.getServletPath(), ex);
+    log.warn("Upload size exceeded. Path {}", httpServletRequest.getServletPath(), ex);
     long permittedSize = ex.getMaxUploadSize();
     final Throwable cause = ex.getCause();
     if (cause != null && cause.getCause() instanceof FileUploadBase.SizeException) {
@@ -70,7 +70,7 @@ public class ApiExceptionAdvice {
   @ExceptionHandler({ConstraintViolationException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorResponse handleConstraintViolationException(ConstraintViolationException ex) {
-    log.error("Constraint violated. Path {}", httpServletRequest.getServletPath(), ex);
+    log.warn("Constraint violated. Path {}", httpServletRequest.getServletPath(), ex);
     final ErrorResponse errorResponse = new ErrorResponse("There are errors in your request");
 
     final List<FieldErrorResponse> fieldErrorResponses = new ArrayList<>();
@@ -88,14 +88,14 @@ public class ApiExceptionAdvice {
   @ExceptionHandler({MethodArgumentNotValidException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorResponse handleValidationException(MethodArgumentNotValidException ex) {
-    log.error("Method argument not valid. Path {}", httpServletRequest.getServletPath(), ex);
+    log.warn("Method argument not valid. Path {}", httpServletRequest.getServletPath(), ex);
     return bindingResultToErrorResponse(ex.getBindingResult());
   }
 
   @ExceptionHandler(BindException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorResponse handleServletRequestBindingException(BindException ex) {
-    log.error("Binding exception. Path {}", httpServletRequest.getServletPath(), ex);
+    log.warn("Binding exception. Path {}", httpServletRequest.getServletPath(), ex);
     return bindingResultToErrorResponse(ex.getBindingResult());
   }
 
@@ -104,8 +104,8 @@ public class ApiExceptionAdvice {
     List<FieldError> errorList = result.getFieldErrors();
     List<FieldErrorResponse> errors = new ArrayList<>();
     for (FieldError fieldError : errorList) {
-      errors.add(new FieldErrorResponse(fieldError.getField(), fieldError.isBindingFailure() ?
-              "Invalid data format" : fieldError.getDefaultMessage()));
+      errors.add(new FieldErrorResponse(fieldError.getField(), fieldError.isBindingFailure()
+              ? "Invalid data format" : fieldError.getDefaultMessage()));
     }
     response.setErrors(errors);
     return response;
@@ -114,7 +114,7 @@ public class ApiExceptionAdvice {
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ErrorResponse handleGeneralException(Exception ex) {
-    log.error("An unexpected error occurred. Path {}", httpServletRequest.getServletPath(), ex);
+    log.warn("An unexpected error occurred. Path {}", httpServletRequest.getServletPath(), ex);
 
     return new ErrorResponse("We could not process your request");
   }

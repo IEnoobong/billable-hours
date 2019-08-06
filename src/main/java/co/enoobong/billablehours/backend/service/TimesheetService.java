@@ -79,8 +79,7 @@ public class TimesheetService {
   private Timesheet toTimesheet(CSVRecord csvRecord, List<String> errors) {
     try {
       final long employeeId = Long.parseLong(csvRecord.get("Employee ID"));
-      final double billableRate =
-              Double.parseDouble(csvRecord.get("Billable Rate (per hour)"));
+      final double billableRate = Double.parseDouble(csvRecord.get("Billable Rate (per hour)"));
       final String project =
               capitalize(csvRecord.get("Project")); // ensure companies of the same name are together
       final LocalDate date = LocalDate.parse(csvRecord.get("Date"));

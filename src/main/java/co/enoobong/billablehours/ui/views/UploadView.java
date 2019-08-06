@@ -74,6 +74,4 @@ public class UploadView extends VerticalLayout implements HasNotifications {
       showNotification("Error occurred when generating invoice");
     }
   }
-
-
 }
