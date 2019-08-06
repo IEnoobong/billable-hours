@@ -62,7 +62,8 @@ public class ApiExceptionAdvice {
       permittedSize = ((FileUploadBase.SizeException) cause.getCause()).getPermittedSize();
     }
 
-    final String errorMessage = "File size is too large. Maximum file size is " + permittedSize + " bytes";
+    final String errorMessage =
+            "File size is too large. Maximum file size is " + permittedSize + " bytes";
 
     return new ErrorResponse(errorMessage);
   }
@@ -77,7 +78,10 @@ public class ApiExceptionAdvice {
     for (ConstraintViolation<?> constraintViolation : ex.getConstraintViolations()) {
       final Object invalidValue = constraintViolation.getInvalidValue();
       if (invalidValue instanceof MultipartFile) {
-        final FieldErrorResponse fieldErrorResponse = new FieldErrorResponse(((MultipartFile) invalidValue).getOriginalFilename(), constraintViolation.getMessage());
+        final FieldErrorResponse fieldErrorResponse =
+                new FieldErrorResponse(
+                        ((MultipartFile) invalidValue).getOriginalFilename(),
+                        constraintViolation.getMessage());
         fieldErrorResponses.add(fieldErrorResponse);
       }
     }
@@ -104,8 +108,10 @@ public class ApiExceptionAdvice {
     List<FieldError> errorList = result.getFieldErrors();
     List<FieldErrorResponse> errors = new ArrayList<>();
     for (FieldError fieldError : errorList) {
-      errors.add(new FieldErrorResponse(fieldError.getField(), fieldError.isBindingFailure()
-              ? "Invalid data format" : fieldError.getDefaultMessage()));
+      errors.add(
+              new FieldErrorResponse(
+                      fieldError.getField(), fieldError.isBindingFailure()
+                      ? "Invalid data format" : fieldError.getDefaultMessage()));
     }
     response.setErrors(errors);
     return response;
@@ -118,5 +124,4 @@ public class ApiExceptionAdvice {
 
     return new ErrorResponse("We could not process your request");
   }
-
 }
