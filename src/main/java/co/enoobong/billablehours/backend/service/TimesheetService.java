@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 import static org.springframework.util.StringUtils.capitalize;
 
 @Service
-//@Component
-//@SessionScope
 public class TimesheetService {
 
   private static final Logger log = LoggerFactory.getLogger(TimesheetService.class);

@@ -140,6 +140,18 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-maven-plugin</artifactId>
+                <version>${vaadin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-frontend</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.4</version>
@@ -160,18 +172,6 @@
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.vaadin</groupId>
-                <artifactId>vaadin-maven-plugin</artifactId>
-                <version>${vaadin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-frontend</goal>
                         </goals>
                     </execution>
                 </executions>

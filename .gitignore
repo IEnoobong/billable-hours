@@ -31,3 +31,9 @@ build/
 
 ### Logs ###
 logs/
+
+### Node ###
+node_modules/
+.DS_Store
+webpack.config.js
+webpack.generated.js
