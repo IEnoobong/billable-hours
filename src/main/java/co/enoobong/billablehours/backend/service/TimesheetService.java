@@ -17,13 +17,13 @@ import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.stereotype.Service;
 
 import static org.springframework.util.StringUtils.capitalize;
 
-@Component
-@SessionScope
+@Service
+//@Component
+//@SessionScope
 public class TimesheetService {
 
   private static final Logger log = LoggerFactory.getLogger(TimesheetService.class);

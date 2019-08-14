@@ -5,7 +5,6 @@ import co.enoobong.billablehours.backend.data.Invoice;
 import co.enoobong.billablehours.backend.data.InvoiceResponse;
 import co.enoobong.billablehours.backend.service.TimesheetService;
 import com.vaadin.flow.component.accordion.Accordion;
-import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -17,12 +16,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import java.util.List;
 
 @Route("invoice")
 @PageTitle("Invoice")
-@HtmlImport("styles/shared-styles.html")
+@PreserveOnRefresh
+//@HtmlImport("styles/shared-styles.html")
 public class InvoiceView extends VerticalLayout implements HasNotifications, AfterNavigationObserver {
 
   private final TimesheetService timesheetService;
@@ -33,14 +34,14 @@ public class InvoiceView extends VerticalLayout implements HasNotifications, Aft
 
   @Override
   public void afterNavigation(AfterNavigationEvent event) {
-    add(new H1("Invoice(s)"));
-
     final InvoiceResponse invoiceResponse = timesheetService.getInvoiceResponse();
 
     if (invoiceResponse == null) {
       getUI().ifPresent(ui -> ui.navigate(UploadView.class)); //go to upload
       return;
     }
+
+    add(new H1("Invoice(s)"));
 
     displayCompanyInvoices(invoiceResponse.getCompanyInvoices());
 

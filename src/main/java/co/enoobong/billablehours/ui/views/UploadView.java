@@ -32,8 +32,6 @@ public class UploadView extends VerticalLayout implements HasNotifications {
 
     final Upload upload = createUpload();
 
-    setSpacing(true);
-
     add(header, upload);
   }
 
