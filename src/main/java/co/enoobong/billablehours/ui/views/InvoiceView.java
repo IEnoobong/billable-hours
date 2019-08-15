@@ -79,7 +79,7 @@ public class InvoiceView extends VerticalLayout implements HasNotifications, Bef
 
     final NavigationTrigger trigger = event.getTrigger();
 
-    if (NavigationTrigger.PROGRAMMATIC.equals(trigger) || NavigationTrigger.HISTORY.equals(trigger)) {
+    if (!NavigationTrigger.PAGE_LOAD.equals(trigger)) {
       add(new H1("Invoice(s)"));
 
       displayCompanyInvoices(invoiceResponse.getCompanyInvoices());
