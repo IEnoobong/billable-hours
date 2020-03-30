@@ -12,10 +12,13 @@ Billable hours is a web application developed with Vaadin and Spring Boot that a
 ![Generated Invoice](invoice_output.png)
 
 ## Building
+You need JDK 1.8 minimum to build this project
+
 1. Clone repository and switch to it's directory.
 2. Run `mvn spring-boot:run` or `./mnvnw spring-boot:run`add the `-P=production-mode` to run in production mode or run
  with Docker `docker build -t billable-hours:v0.0.1 . && docker run -d billable-hours:v0.0.1`
-3. run `mvn clean package` 
+3. You could also run the jar file directly, run `mvn clean package` then `java -jar target/billable-hours-{version}.jar`
+    
  > App would be available on `http://{localhost}:{port}` and API doc `http://{localhost}:{port}/swagger-ui.html`
 
  
