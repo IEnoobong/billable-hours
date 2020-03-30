@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,11 +25,10 @@ public class CsvService {
 
   List<CSVRecord> read(InputStream stream) throws IOException {
     log.info("parsing .csv file");
-    final InputStreamReader inputStreamReader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-    try (CSVParser parser = csvFormat.parse(inputStreamReader)) {
+    try (final InputStreamReader inputStreamReader =
+                 new InputStreamReader(stream, StandardCharsets.UTF_8);
+         final CSVParser parser = csvFormat.parse(inputStreamReader)) {
       return parser.getRecords();
-    } finally {
-      IOUtils.closeQuietly(inputStreamReader);
     }
   }
 }

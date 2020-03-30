@@ -64,10 +64,6 @@ public class TimesheetService {
     this.generatedInvoiceResponse = invoiceResponse;
   }
 
-  public InvoiceResponse getInvoiceResponse() {
-    return generatedInvoiceResponse;
-  }
-
   private Invoice toInvoice(Timesheet timesheet) {
     final long numberOfHours =
             Duration.between(timesheet.getStartTime(), timesheet.getEndTime()).toHours();
@@ -101,4 +97,9 @@ public class TimesheetService {
       return null;
     }
   }
+
+  public InvoiceResponse getInvoiceResponse() {
+    return generatedInvoiceResponse;
+  }
+
 }
