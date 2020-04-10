@@ -5,7 +5,7 @@ import co.enoobong.billablehours.backend.data.Invoice;
 import co.enoobong.billablehours.backend.data.InvoiceResponse;
 import co.enoobong.billablehours.backend.service.TimesheetService;
 import com.vaadin.flow.component.accordion.Accordion;
-import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -14,37 +14,24 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.NavigationTrigger;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import java.util.List;
 
 @Route("invoice")
 @PageTitle("Invoice")
-@HtmlImport("styles/shared-styles.html")
-public class InvoiceView extends VerticalLayout implements HasNotifications, AfterNavigationObserver {
+@PreserveOnRefresh
+@JsModule("./styles/shared-styles.js")
+public class InvoiceView extends VerticalLayout implements HasNotifications, BeforeEnterObserver {
 
   private final TimesheetService timesheetService;
 
   public InvoiceView(TimesheetService timesheetService) {
     this.timesheetService = timesheetService;
-  }
-
-  @Override
-  public void afterNavigation(AfterNavigationEvent event) {
-    add(new H1("Invoice(s)"));
-
-    final InvoiceResponse invoiceResponse = timesheetService.getInvoiceResponse();
-
-    if (invoiceResponse == null) {
-      getUI().ifPresent(ui -> ui.navigate(UploadView.class)); //go to upload
-      return;
-    }
-
-    displayCompanyInvoices(invoiceResponse.getCompanyInvoices());
-
-    displayErrors(invoiceResponse.getErrors());
   }
 
   private void displayCompanyInvoices(List<CompanyInvoice> companyInvoices) {
@@ -78,6 +65,26 @@ public class InvoiceView extends VerticalLayout implements HasNotifications, Aft
       accordion.add("Error(s)", errorList).addThemeVariants(DetailsVariant.FILLED);
       accordion.close();
       add(accordion);
+    }
+  }
+
+  @Override
+  public void beforeEnter(BeforeEnterEvent event) {
+    final InvoiceResponse invoiceResponse = timesheetService.getInvoiceResponse();
+
+    if (invoiceResponse == null) {
+      event.forwardTo(UploadView.class); //go to upload
+      return;
+    }
+
+    final NavigationTrigger trigger = event.getTrigger();
+
+    if (!NavigationTrigger.PAGE_LOAD.equals(trigger)) {
+      add(new H1("Invoice(s)"));
+
+      displayCompanyInvoices(invoiceResponse.getCompanyInvoices());
+
+      displayErrors(invoiceResponse.getErrors());
     }
   }
 }

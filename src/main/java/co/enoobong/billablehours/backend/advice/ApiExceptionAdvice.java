@@ -7,7 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import org.apache.tomcat.util.http.fileupload.FileUploadBase;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -56,14 +56,11 @@ public class ApiExceptionAdvice {
   @ExceptionHandler(MaxUploadSizeExceededException.class)
   public ErrorResponse handleUploadSizeExceededException(MaxUploadSizeExceededException ex) {
     log.warn("Upload size exceeded. Path {}", httpServletRequest.getServletPath(), ex);
-    long permittedSize = ex.getMaxUploadSize();
-    final Throwable cause = ex.getCause();
-    if (cause != null && cause.getCause() instanceof FileUploadBase.SizeException) {
-      permittedSize = ((FileUploadBase.SizeException) cause.getCause()).getPermittedSize();
-    }
+
+    final FileSizeLimitExceededException cause = (FileSizeLimitExceededException) ex.getCause().getCause();
 
     final String errorMessage =
-            "File size is too large. Maximum file size is " + permittedSize + " bytes";
+            "File is too large. Maximum file size is " + cause.getPermittedSize() + " bytes but was " + cause.getActualSize() + " bytes";
 
     return new ErrorResponse(errorMessage);
   }

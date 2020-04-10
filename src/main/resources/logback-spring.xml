@@ -39,10 +39,11 @@
 
     <!-- Appender to log to logstash -->
     <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>${LOGSTASH_HOST:-localhost}:${LOGSTASH_PORT:-5044}</destination>
+        <destination>${LOGSTASH_HOST:-elk}:${LOGSTASH_PORT:-8080}</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-        <keepAliveDuration>3 minutes</keepAliveDuration>
+        <keepAliveDuration>5 minutes</keepAliveDuration>
         <writeBufferSize>16384</writeBufferSize>
+        <reconnectionDelay>5 seconds</reconnectionDelay>
     </appender>
 
     <springProfile name="default | dev">
