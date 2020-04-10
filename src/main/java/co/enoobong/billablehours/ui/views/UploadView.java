@@ -54,7 +54,7 @@ public class UploadView extends VerticalLayout implements HasNotifications {
 
   private void onFileRejected(int maxFileSizeInBytes, DomEvent event) {
     log.info("file rejected {}", event);
-    //there could be other reasons but the Java event object is not so flexible
+    //there could be other reasons, but the Java event object is not so flexible
     final String errorMessage = "Maximum upload size exceeded. File cannot be more than %d bytes";
     showNotification(String.format(errorMessage, maxFileSizeInBytes));
   }
