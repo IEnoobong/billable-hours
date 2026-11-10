@@ -20,7 +20,6 @@ import static co.enoobong.billablehours.util.TestUtil.invoiceResponse;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,8 +36,7 @@ public class TimesheetApiResourceTest {
 
   @Test
   public void givenTimesheetDataShouldGenerateInvoice() throws Exception {
-    willDoNothing().given(timesheetService).generateInvoice(any(Resource.class));
-    given(timesheetService.getInvoiceResponse()).willReturn(invoiceResponse());
+    given(timesheetService.generateInvoice(any(Resource.class))).willReturn(invoiceResponse());
 
     final MockMultipartFile timesheetFile = new MockMultipartFile("timesheet", "timesheet.csv", "text/csv",
             "timesheetData".getBytes(StandardCharsets.UTF_8));
@@ -49,7 +47,7 @@ public class TimesheetApiResourceTest {
             .contentType(MediaType.MULTIPART_FORM_DATA))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.companyInvoices[0].companyName").value(companyInvoice.getCompanyName()))
-            .andExpect(jsonPath("$.companyInvoices[0].totalCost").value(companyInvoice.getTotalCost()))
+            .andExpect(jsonPath("$.companyInvoices[0].totalCost").value(companyInvoice.getTotalCost().doubleValue()))
             .andExpect(jsonPath("$.errors[0]").value(CSV_ERROR_MESSAGE));
   }
 

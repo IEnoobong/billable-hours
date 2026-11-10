@@ -3,7 +3,6 @@ package co.enoobong.billablehours.ui.views;
 import co.enoobong.billablehours.backend.data.CompanyInvoice;
 import co.enoobong.billablehours.backend.data.Invoice;
 import co.enoobong.billablehours.backend.data.InvoiceResponse;
-import co.enoobong.billablehours.backend.service.TimesheetService;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.details.DetailsVariant;
@@ -28,12 +27,6 @@ import java.util.List;
 @JsModule("./styles/shared-styles.js")
 public class InvoiceView extends VerticalLayout implements HasNotifications, BeforeEnterObserver {
 
-  private final TimesheetService timesheetService;
-
-  public InvoiceView(TimesheetService timesheetService) {
-    this.timesheetService = timesheetService;
-  }
-
   private void displayCompanyInvoices(List<CompanyInvoice> companyInvoices) {
     for (final CompanyInvoice companyInvoice : companyInvoices) {
       add(new H2("Company: " + companyInvoice.getCompanyName()));
@@ -48,7 +41,7 @@ public class InvoiceView extends VerticalLayout implements HasNotifications, Bef
       invoiceGrid.addColumn(Invoice::getEmployeeId).setHeader("Employee ID");
       invoiceGrid.addColumn(Invoice::getNumberOfHours).setHeader("Number of hours");
       invoiceGrid.addColumn(Invoice::getUnitPrice).setHeader("Unit Price").setFooter("Total");
-      invoiceGrid.addColumn(Invoice::getCost).setHeader("Cost").setFooter(String.valueOf(companyInvoice.getTotalCost()));
+      invoiceGrid.addColumn(Invoice::getCost).setHeader("Cost").setFooter(companyInvoice.getTotalCost().toPlainString());
 
       add(invoiceGrid);
     }
@@ -70,7 +63,7 @@ public class InvoiceView extends VerticalLayout implements HasNotifications, Bef
 
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
-    final InvoiceResponse invoiceResponse = timesheetService.getInvoiceResponse();
+    final InvoiceResponse invoiceResponse = event.getUI().getSession().getAttribute(InvoiceResponse.class);
 
     if (invoiceResponse == null) {
       event.forwardTo(UploadView.class); //go to upload

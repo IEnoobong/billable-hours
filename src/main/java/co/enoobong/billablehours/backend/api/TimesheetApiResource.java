@@ -24,7 +24,6 @@ public class TimesheetApiResource {
 
   @PostMapping(value = "generate-invoice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public InvoiceResponse generateInvoiceForTimesheet(@RequestPart("timesheet") @CheckFile MultipartFile request) throws IOException {
-    timesheetService.generateInvoice(request.getResource());
-    return timesheetService.getInvoiceResponse();
+    return timesheetService.generateInvoice(request.getResource());
   }
 }
