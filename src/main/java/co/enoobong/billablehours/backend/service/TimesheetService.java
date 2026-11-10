@@ -26,13 +26,12 @@ public class TimesheetService {
 
   private static final Logger log = LoggerFactory.getLogger(TimesheetService.class);
   private final CsvService csvService;
-  private InvoiceResponse generatedInvoiceResponse;
 
   public TimesheetService(CsvService csvService) {
     this.csvService = csvService;
   }
 
-  public void generateInvoice(Resource timesheetResource) throws IOException {
+  public InvoiceResponse generateInvoice(Resource timesheetResource) throws IOException {
     final List<CSVRecord> timesheetData = csvService.read(timesheetResource.getInputStream());
     if (timesheetData.isEmpty()) {
       new InvoiceResponse();
@@ -59,7 +58,7 @@ public class TimesheetService {
               companyInvoice.setTotalCost(totalCost);
               invoiceResponse.addCompanyInvoice(companyInvoice);
             });
-    this.generatedInvoiceResponse = invoiceResponse;
+    return invoiceResponse;
   }
 
   private Invoice toInvoice(Timesheet timesheet) {
@@ -94,10 +93,6 @@ public class TimesheetService {
       errors.add(String.format(errorMessage, currentLineNumber, csvRecord.toMap()));
       return null;
     }
-  }
-
-  public InvoiceResponse getInvoiceResponse() {
-    return generatedInvoiceResponse;
   }
 
 }

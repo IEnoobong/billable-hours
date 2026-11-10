@@ -3,7 +3,6 @@ package co.enoobong.billablehours.ui.views;
 import co.enoobong.billablehours.backend.data.CompanyInvoice;
 import co.enoobong.billablehours.backend.data.Invoice;
 import co.enoobong.billablehours.backend.data.InvoiceResponse;
-import co.enoobong.billablehours.backend.service.TimesheetService;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.details.DetailsVariant;
@@ -27,12 +26,6 @@ import java.util.List;
 @PreserveOnRefresh
 @JsModule("./styles/shared-styles.js")
 public class InvoiceView extends VerticalLayout implements HasNotifications, BeforeEnterObserver {
-
-  private final TimesheetService timesheetService;
-
-  public InvoiceView(TimesheetService timesheetService) {
-    this.timesheetService = timesheetService;
-  }
 
   private void displayCompanyInvoices(List<CompanyInvoice> companyInvoices) {
     for (final CompanyInvoice companyInvoice : companyInvoices) {
@@ -70,7 +63,7 @@ public class InvoiceView extends VerticalLayout implements HasNotifications, Bef
 
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
-    final InvoiceResponse invoiceResponse = timesheetService.getInvoiceResponse();
+    final InvoiceResponse invoiceResponse = event.getUI().getSession().getAttribute(InvoiceResponse.class);
 
     if (invoiceResponse == null) {
       event.forwardTo(UploadView.class); //go to upload

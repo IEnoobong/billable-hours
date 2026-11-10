@@ -31,9 +31,7 @@ public class TimesheetServiceIT {
 
   @Test
   public void givenTimesheetResourceWhenGenerateInvoiceShouldGenerate() throws IOException {
-    timesheetService.generateInvoice(new ClassPathResource("timesheet.csv"));
-
-    final InvoiceResponse invoiceResponse = timesheetService.getInvoiceResponse();
+    final InvoiceResponse invoiceResponse = timesheetService.generateInvoice(new ClassPathResource("timesheet.csv"));
 
     errorCollector.checkThat("response was null", invoiceResponse, notNullValue());
     errorCollector.checkThat("company invoice count was not correct", invoiceResponse.getCompanyInvoices(), hasSize(2));

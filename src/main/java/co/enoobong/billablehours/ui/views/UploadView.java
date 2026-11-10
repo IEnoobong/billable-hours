@@ -1,5 +1,6 @@
 package co.enoobong.billablehours.ui.views;
 
+import co.enoobong.billablehours.backend.data.InvoiceResponse;
 import co.enoobong.billablehours.backend.service.TimesheetService;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
@@ -66,8 +67,13 @@ public class UploadView extends VerticalLayout implements HasNotifications {
 
   private void onUploadSucceeded(MemoryBuffer receiver) {
     try {
-      timesheetService.generateInvoice(new InputStreamResource(receiver.getInputStream()));
-      getUI().ifPresent(ui -> ui.navigate(InvoiceView.class));
+      final InvoiceResponse invoiceResponse =
+              timesheetService.generateInvoice(new InputStreamResource(receiver.getInputStream()));
+      getUI().ifPresent(ui -> {
+        // kept per session: TimesheetService is a singleton shared by every user
+        ui.getSession().setAttribute(InvoiceResponse.class, invoiceResponse);
+        ui.navigate(InvoiceView.class);
+      });
     } catch (IOException ex) {
       showNotification("Error occurred when generating invoice");
     }
