@@ -5,6 +5,8 @@ import co.enoobong.billablehours.backend.data.Invoice;
 import co.enoobong.billablehours.backend.data.InvoiceResponse;
 import co.enoobong.billablehours.backend.data.Timesheet;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,6 +27,7 @@ import static org.springframework.util.StringUtils.capitalize;
 public class TimesheetService {
 
   private static final Logger log = LoggerFactory.getLogger(TimesheetService.class);
+  private static final BigDecimal MINUTES_PER_HOUR = BigDecimal.valueOf(60);
   private final CsvService csvService;
 
   public TimesheetService(CsvService csvService) {
@@ -51,7 +54,8 @@ public class TimesheetService {
             (key, value) -> {
               final List<Invoice> invoices =
                       value.stream().map(this::toInvoice).collect(Collectors.toList());
-              final double totalCost = invoices.stream().mapToDouble(Invoice::getCost).sum();
+              final BigDecimal totalCost =
+                      invoices.stream().map(Invoice::getCost).reduce(BigDecimal.ZERO, BigDecimal::add);
               final CompanyInvoice companyInvoice = new CompanyInvoice();
               companyInvoice.setCompanyName(key);
               companyInvoice.setInvoices(invoices);
@@ -62,9 +66,13 @@ public class TimesheetService {
   }
 
   private Invoice toInvoice(Timesheet timesheet) {
-    final long numberOfHours =
-            Duration.between(timesheet.getStartTime(), timesheet.getEndTime()).toHours();
-    double cost = numberOfHours * timesheet.getBillableRate();
+    // Duration.toHours() truncates, which billed 09:00-16:30 as 7 hours instead of 7.5
+    final BigDecimal minutes =
+            BigDecimal.valueOf(Duration.between(timesheet.getStartTime(), timesheet.getEndTime()).toMinutes());
+    final BigDecimal numberOfHours = minutes.divide(MINUTES_PER_HOUR, 2, RoundingMode.HALF_UP);
+    // from the exact minutes, not the rounded hours: 20 minutes at 100/h is 33.33, not 0.33 * 100
+    final BigDecimal cost =
+            timesheet.getBillableRate().multiply(minutes).divide(MINUTES_PER_HOUR, 2, RoundingMode.HALF_UP);
 
     return new Invoice(timesheet.getEmployeeId(), numberOfHours, timesheet.getBillableRate(), cost);
   }
@@ -72,7 +80,7 @@ public class TimesheetService {
   private Timesheet toTimesheet(CSVRecord csvRecord, List<String> errors) {
     try {
       final long employeeId = Long.parseLong(csvRecord.get("Employee ID"));
-      final double billableRate = Double.parseDouble(csvRecord.get("Billable Rate (per hour)"));
+      final BigDecimal billableRate = new BigDecimal(csvRecord.get("Billable Rate (per hour)"));
       final String project =
               capitalize(csvRecord.get("Project")); // ensure companies of the same name are together
       final LocalDate date = LocalDate.parse(csvRecord.get("Date"));

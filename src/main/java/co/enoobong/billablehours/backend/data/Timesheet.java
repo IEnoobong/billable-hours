@@ -1,5 +1,6 @@
 package co.enoobong.billablehours.backend.data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -7,7 +8,7 @@ public class Timesheet {
 
   private long employeeId;
 
-  private double billableRate;
+  private BigDecimal billableRate;
 
   private String project;
 
@@ -17,7 +18,7 @@ public class Timesheet {
 
   private LocalTime endTime;
 
-  public Timesheet(long employeeId, double billableRate, String project, LocalDate date, LocalTime startTime,
+  public Timesheet(long employeeId, BigDecimal billableRate, String project, LocalDate date, LocalTime startTime,
                    LocalTime endTime) {
     this.employeeId = employeeId;
     this.billableRate = billableRate;
@@ -35,11 +36,11 @@ public class Timesheet {
     this.employeeId = employeeId;
   }
 
-  public double getBillableRate() {
+  public BigDecimal getBillableRate() {
     return billableRate;
   }
 
-  public void setBillableRate(double billableRate) {
+  public void setBillableRate(BigDecimal billableRate) {
     this.billableRate = billableRate;
   }
 

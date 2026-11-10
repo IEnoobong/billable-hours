@@ -47,7 +47,7 @@ public class TimesheetApiResourceTest {
             .contentType(MediaType.MULTIPART_FORM_DATA))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.companyInvoices[0].companyName").value(companyInvoice.getCompanyName()))
-            .andExpect(jsonPath("$.companyInvoices[0].totalCost").value(companyInvoice.getTotalCost()))
+            .andExpect(jsonPath("$.companyInvoices[0].totalCost").value(companyInvoice.getTotalCost().doubleValue()))
             .andExpect(jsonPath("$.errors[0]").value(CSV_ERROR_MESSAGE));
   }
 

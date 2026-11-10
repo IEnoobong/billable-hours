@@ -41,7 +41,7 @@ public class InvoiceView extends VerticalLayout implements HasNotifications, Bef
       invoiceGrid.addColumn(Invoice::getEmployeeId).setHeader("Employee ID");
       invoiceGrid.addColumn(Invoice::getNumberOfHours).setHeader("Number of hours");
       invoiceGrid.addColumn(Invoice::getUnitPrice).setHeader("Unit Price").setFooter("Total");
-      invoiceGrid.addColumn(Invoice::getCost).setHeader("Cost").setFooter(String.valueOf(companyInvoice.getTotalCost()));
+      invoiceGrid.addColumn(Invoice::getCost).setHeader("Cost").setFooter(companyInvoice.getTotalCost().toPlainString());
 
       add(invoiceGrid);
     }

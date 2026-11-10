@@ -1,16 +1,17 @@
 package co.enoobong.billablehours.backend.data;
 
+import java.math.BigDecimal;
 public class Invoice {
 
   private long employeeId;
 
-  private long numberOfHours;
+  private BigDecimal numberOfHours;
 
-  private double unitPrice;
+  private BigDecimal unitPrice;
 
-  private double cost;
+  private BigDecimal cost;
 
-  public Invoice(long employeeId, long numberOfHours, double unitPrice, double cost) {
+  public Invoice(long employeeId, BigDecimal numberOfHours, BigDecimal unitPrice, BigDecimal cost) {
     this.employeeId = employeeId;
     this.numberOfHours = numberOfHours;
     this.unitPrice = unitPrice;
@@ -25,27 +26,27 @@ public class Invoice {
     this.employeeId = employeeId;
   }
 
-  public long getNumberOfHours() {
+  public BigDecimal getNumberOfHours() {
     return numberOfHours;
   }
 
-  public void setNumberOfHours(long numberOfHours) {
+  public void setNumberOfHours(BigDecimal numberOfHours) {
     this.numberOfHours = numberOfHours;
   }
 
-  public double getUnitPrice() {
+  public BigDecimal getUnitPrice() {
     return unitPrice;
   }
 
-  public void setUnitPrice(double unitPrice) {
+  public void setUnitPrice(BigDecimal unitPrice) {
     this.unitPrice = unitPrice;
   }
 
-  public double getCost() {
+  public BigDecimal getCost() {
     return cost;
   }
 
-  public void setCost(double cost) {
+  public void setCost(BigDecimal cost) {
     this.cost = cost;
   }
 

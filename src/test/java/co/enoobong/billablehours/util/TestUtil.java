@@ -3,6 +3,7 @@ package co.enoobong.billablehours.util;
 import co.enoobong.billablehours.backend.data.CompanyInvoice;
 import co.enoobong.billablehours.backend.data.Invoice;
 import co.enoobong.billablehours.backend.data.InvoiceResponse;
+import java.math.BigDecimal;
 import java.util.Collections;
 
 public final class TestUtil {
@@ -24,12 +25,12 @@ public final class TestUtil {
   public static CompanyInvoice companyInvoice() {
     final CompanyInvoice companyInvoice = new CompanyInvoice();
     companyInvoice.setCompanyName("Google");
-    companyInvoice.setTotalCost(1024.00D);
+    companyInvoice.setTotalCost(new BigDecimal("2400.00"));
     companyInvoice.setInvoices(Collections.singletonList(invoice()));
     return companyInvoice;
   }
 
   private static Invoice invoice() {
-    return new Invoice(1L, 8L, 300D, 50D);
+    return new Invoice(1L, new BigDecimal("8.00"), new BigDecimal("300"), new BigDecimal("2400.00"));
   }
 }

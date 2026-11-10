@@ -3,6 +3,7 @@ package co.enoobong.billablehours.backend.service;
 import co.enoobong.billablehours.backend.data.CompanyInvoice;
 import co.enoobong.billablehours.backend.data.InvoiceResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -13,7 +14,7 @@ import org.junit.rules.ErrorCollector;
 import org.springframework.core.io.ClassPathResource;
 
 import static co.enoobong.billablehours.backend.config.BeanConfig.APP_CSV_FORMAT;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.startsWith;
@@ -41,7 +42,7 @@ public class TimesheetServiceIT {
             .collect(Collectors.toMap(CompanyInvoice::getCompanyName, Function.identity()));
     final CompanyInvoice googleInvoices = companyToInvoices.get("Google");
     errorCollector.checkThat("google's total invoice cost was not correct", googleInvoices.getTotalCost(),
-            equalTo(17800.0));
+            is(new BigDecimal("17800.00")));
     errorCollector.checkThat("google's invoice count was not correct", googleInvoices.getInvoices(), hasSize(11));
     errorCollector.checkThat("error count was not correct", invoiceResponse.getErrors(), hasSize(1));
     errorCollector.checkThat("error should point at the bad row", invoiceResponse.getErrors().get(0),

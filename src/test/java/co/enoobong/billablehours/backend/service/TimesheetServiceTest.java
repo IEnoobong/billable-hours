@@ -1,7 +1,9 @@
 package co.enoobong.billablehours.backend.service;
 
+import co.enoobong.billablehours.backend.data.Invoice;
 import co.enoobong.billablehours.backend.data.InvoiceResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,6 +63,34 @@ public class TimesheetServiceTest {
       // error e comes from row i = 2e + 1, which is on line i + 2 (line 1 is the header)
       assertThat(response.getErrors().get(e), startsWith("An error occurred at line " + (2 * e + 3) + " "));
     }
+  }
+
+  @Test
+  public void billsPartialHours() throws IOException {
+    final InvoiceResponse response = timesheetService.generateInvoice(csv("1,100,Google,2019-07-01,09:00,16:30\n"));
+
+    final Invoice invoice = response.getCompanyInvoices().get(0).getInvoices().get(0);
+    assertThat(invoice.getNumberOfHours(), is(new BigDecimal("7.50")));
+    assertThat(invoice.getCost(), is(new BigDecimal("750.00")));
+  }
+
+  @Test
+  public void chargesExactMinutesRatherThanRoundedHours() throws IOException {
+    final InvoiceResponse response = timesheetService.generateInvoice(csv("1,100,Google,2019-07-01,09:00,09:20\n"));
+
+    final Invoice invoice = response.getCompanyInvoices().get(0).getInvoices().get(0);
+    assertThat(invoice.getNumberOfHours(), is(new BigDecimal("0.33")));
+    assertThat(invoice.getCost(), is(new BigDecimal("33.33")));
+  }
+
+  @Test
+  public void totalsAddUpToTheCent() throws IOException {
+    // 0.1 + 0.2 is 0.30000000000000004 as doubles
+    final InvoiceResponse response = timesheetService.generateInvoice(csv(
+            "1,0.10,Google,2019-07-01,09:00,10:00\n"
+                    + "2,0.20,Google,2019-07-01,09:00,10:00\n"));
+
+    assertThat(response.getCompanyInvoices().get(0).getTotalCost(), is(new BigDecimal("0.30")));
   }
 
   static ByteArrayResource csv(String rows) {

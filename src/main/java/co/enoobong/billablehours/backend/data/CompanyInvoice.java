@@ -1,5 +1,6 @@
 package co.enoobong.billablehours.backend.data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class CompanyInvoice {
@@ -7,7 +8,7 @@ public class CompanyInvoice {
 
   private List<Invoice> invoices;
 
-  private double totalCost;
+  private BigDecimal totalCost;
 
   public String getCompanyName() {
     return companyName;
@@ -25,11 +26,11 @@ public class CompanyInvoice {
     this.invoices = invoices;
   }
 
-  public double getTotalCost() {
+  public BigDecimal getTotalCost() {
     return totalCost;
   }
 
-  public void setTotalCost(double totalCost) {
+  public void setTotalCost(BigDecimal totalCost) {
     this.totalCost = totalCost;
   }
 }
