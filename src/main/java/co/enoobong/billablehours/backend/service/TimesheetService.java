@@ -9,9 +9,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
@@ -33,17 +33,17 @@ public class TimesheetService {
 
   public InvoiceResponse generateInvoice(Resource timesheetResource) throws IOException {
     final List<CSVRecord> timesheetData = csvService.read(timesheetResource.getInputStream());
-    if (timesheetData.isEmpty()) {
-      new InvoiceResponse();
-    }
     final List<String> errors = new ArrayList<>();
 
-    final Map<String, List<Timesheet>> projectToTimesheets =
-            timesheetData.stream()
-                    .parallel()
-                    .map(csvRecord -> toTimesheet(csvRecord, errors))
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.groupingBy(Timesheet::getProject));
+    // sequential on purpose: toTimesheet appends to errors, and rows are tiny, so a
+    // parallel stream only bought lost errors and a random error order
+    final Map<String, List<Timesheet>> projectToTimesheets = new LinkedHashMap<>();
+    for (final CSVRecord csvRecord : timesheetData) {
+      final Timesheet timesheet = toTimesheet(csvRecord, errors);
+      if (timesheet != null) {
+        projectToTimesheets.computeIfAbsent(timesheet.getProject(), project -> new ArrayList<>()).add(timesheet);
+      }
+    }
 
     final InvoiceResponse invoiceResponse = new InvoiceResponse();
     invoiceResponse.setErrors(errors);
@@ -86,11 +86,13 @@ public class TimesheetService {
       return new Timesheet(employeeId, billableRate, project, date, startTime, endTime);
     } catch (Exception ex) {
       log.warn("Error occurred when parsing value to timesheet", ex);
-      final long currentLineNumber = csvRecord.getParser().getCurrentLineNumber();
+      // getParser().getCurrentLineNumber() is where the parser is now, i.e. the end of the
+      // file once all records are read. +1 because line 1 is the header.
+      final long lineNumber = csvRecord.getRecordNumber() + 1;
       final String errorMessage =
               "An error occurred at line %d when processing timesheet. Please verify that %s, "
                       + "is in the accepted format";
-      errors.add(String.format(errorMessage, currentLineNumber, csvRecord.toMap()));
+      errors.add(String.format(errorMessage, lineNumber, csvRecord.toMap()));
       return null;
     }
   }

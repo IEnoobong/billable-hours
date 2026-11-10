@@ -7,7 +7,7 @@ import java.util.Collections;
 
 public final class TestUtil {
 
-  public static final String CSV_ERROR_MESSAGE = "An error occurred at line 17 when processing timesheet. Please " +
+  public static final String CSV_ERROR_MESSAGE = "An error occurred at line 7 when processing timesheet. Please " +
           "verify that {employeeId=Yes, billableRate=No, project=Happy, date=20, startTime=10, endTime=5, =2}, is in the accepted format";
 
   private TestUtil() {

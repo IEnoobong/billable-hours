@@ -16,6 +16,7 @@ import static co.enoobong.billablehours.backend.config.BeanConfig.APP_CSV_FORMAT
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.startsWith;
 
 public class TimesheetServiceIT {
 
@@ -43,5 +44,7 @@ public class TimesheetServiceIT {
             equalTo(17800.0));
     errorCollector.checkThat("google's invoice count was not correct", googleInvoices.getInvoices(), hasSize(11));
     errorCollector.checkThat("error count was not correct", invoiceResponse.getErrors(), hasSize(1));
+    errorCollector.checkThat("error should point at the bad row", invoiceResponse.getErrors().get(0),
+            startsWith("An error occurred at line 7 "));
   }
 }
